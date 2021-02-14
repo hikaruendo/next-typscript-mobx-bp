@@ -1,15 +1,31 @@
-import Link from 'next/link'
-import Layout from '../components/Layout'
+import Layout from "../components/Layout";
+import { inject } from "mobx-react";
+import { observer } from "mobx-react-lite";
+import { NextPage } from "next";
+import { DataStore } from "../stores/DataStore";
 
-const IndexPage = () => (
-  <Layout title="Home | Next.js + TypeScript Example">
-    <h1>Hello Next.js 👋</h1>
-    <p>
-      <Link href="/about">
-        <a>About</a>
-      </Link>
-    </p>
-  </Layout>
-)
+type Props = {
+  dataStore?: DataStore;
+};
 
-export default IndexPage
+const IndexPage: NextPage = inject("dataStore")(
+  observer((props: Props) => {
+    const dataStore = props.dataStore!;
+
+    return (
+      <Layout title="Home | Next.js + TypeScript Example">
+        <h1>My first Medium article</h1>
+
+        <p>{dataStore.title} 👋</p>
+
+        <input
+          type="text"
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+            dataStore.changeTitle(e.target.value)
+          }
+        />
+      </Layout>
+    );
+  })
+);
+export default IndexPage;
